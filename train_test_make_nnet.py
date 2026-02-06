@@ -45,6 +45,29 @@ class ScoreMaker:
     def get_training_statistic(self):
         return self.avg_scores, self.avg_moves, self.epsilons
 
+def just_play(games, agent, env:SnakeGame, view_type):
+    for game in range(games):
+        _ = env.reset()
+        state = env.get_state(view_type)
+        if len(state.shape) > 1: 
+            state = state.flatten()
+
+        terminated = False
+        while terminated is False:
+            action_i = agent.get_action(state, epsilon=0)
+            action = np.zeros(3)
+            action[action_i] = 1
+
+            terminated, score, reward, next_state = env.play_step(action, view_type, 0)
+            if len(next_state.shape) > 1: 
+                next_state = next_state.flatten()
+            
+            state = next_state
+    
+        print(f"Game {game+1} ended with score: {score}")
+    
+
+
 def train_model(agent, env:SnakeGame, view_type, num_episodes=2000, round2=False):
     if not round2:
         score_maker = ScoreMaker(epsilon=1.0, epsilon_min=0.03, epsilon_decay=0.9985)

@@ -1,6 +1,6 @@
 from snake_game import SnakeGame
 from deep_q_learning_torch import DQN, DDQN
-from train_test_make_nnet import test_model, train_model, build_model
+from train_test_make_nnet import test_model, train_model, build_model, just_play
 from plot_stats import plot_training_statistics
 
 
@@ -22,7 +22,14 @@ if __name__ == '__main__':
       target_model = build_model(input_dim, output_dim)
       
       agent = DQN(input_dim, output_dim, model,target_model, learning_rate=0.001, batch_size=_batch_size, memory_size=_memory_size)
-
+      
+      
+      play = input("Let the agent just play a game? (y/n)")
+      if play == 'y':
+            agent.load("Snake_directional_type_35.88_episodes_3000_[bat=256,mem=8_192]","round2")
+            just_play(100,agent, SnakeGame(ren=True, speed=0, test=True), view_type)
+      
+      
       x = input("First train the model? (y/n)") 
       if x == 'y':      
             (avg_score, avg_moves, epsilon) = train_model(agent, env, view_type, num_episodes=episodes_)
